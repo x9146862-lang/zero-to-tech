@@ -1,0 +1,4 @@
+# 开发/测试专用依赖，跑自动化测试才需要装。
+# 装法：pip install -r requirements-dev.txt
+-r requirements.txt
+pytest
