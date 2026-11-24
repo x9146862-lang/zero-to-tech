@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from pypinyin import lazy_pinyin, Style
 from snownlp import SnowNLP
-from storage import init_db, save_record, get_history
+from storage import init_db, save_record, get_history, clear_history as storage_clear_history
 from datetime import datetime, timezone
 import os
 from dotenv import load_dotenv
@@ -28,7 +28,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
     allow_credentials=True,  #后端允许跨源的前端带cookie过来
 )
@@ -98,5 +98,12 @@ def analyze(req: AnalyzeRequest, request: Request, response: Response):
 def history(request: Request, response: Response, limit: int = 10):
     sid = get_session_id(request, response)
     return get_history(sid, limit)    # 只回这个会话自己的
+
+
+@app.delete("/api/history")
+def clear_history(request: Request, response: Response):
+    sid = get_session_id(request, response)
+    storage_clear_history(sid)        # 只清这个会话自己的记录
+    return {"ok": True}
 
     
