@@ -17,19 +17,24 @@ export default function ResultCard({ result, onOpenHistory }) {
   const label = result ? result.label : "偏积极";
 
   useEffect(() => {
-    // 卡片自己淡入：.card 默认 opacity:0，这张卡负责把自己显出来
+    // 卡片自己淡入一次：.card 默认 opacity:0，这张卡负责把自己显出来
     animate(cardRef.current, {
       opacity: [0, 1],
       translateY: [24, 0],
       duration: 700,
       ease: "outBack",
     });
-    // 情感分数滚动归位
+  }, []);
+
+  useEffect(() => {
+    // 分数每次变化都重新滚动一次。
+    // 注意：数字不由 React 渲染（strong 里是空的），完全交给 animejs 写 innerHTML，
+    // 否则 animejs 改掉 innerHTML 后，React 记录的文本节点失效，第二次分析分数不会更新。
     animate(scoreRef.current, {
-      innerHTML: scrambleText({ chars: "0-9" }),
+      innerHTML: scrambleText({ chars: "0-9", text: String(score) }),
       duration: 1500,
     });
-  }, []);
+  }, [score]);
 
   return (
     <article ref={cardRef} className="panel panel-half lab-panel result-panel card">
@@ -55,7 +60,7 @@ export default function ResultCard({ result, onOpenHistory }) {
         <div className="result-grid">
           <div className="result-badge">
             <span>情感分数</span>
-            <strong data-score ref={scoreRef}>{score}</strong>
+            <strong data-score ref={scoreRef}></strong>
           </div>
           <div className="result-badge">
             <span>情感判断</span>

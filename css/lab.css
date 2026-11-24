@@ -77,6 +77,11 @@
 
 .primary-button:hover { opacity: 0.86; }
 
+.primary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .result-stack {
   display: grid;
   gap: 14px;
