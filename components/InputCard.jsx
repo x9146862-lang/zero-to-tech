@@ -14,12 +14,19 @@ export default function InputCard({ onResult }) {
   async function handleAnalyze() {
     setError("");
 
+    // 空文本不发请求：后端拿空字符串会崩，这里先拦住，给一句人话提示
+    const trimmed = text.trim();
+    if (!trimmed) {
+      setError("先贴点文字再分析，别空着。");
+      return;
+    }
+
     try {
       const res = await fetch(`${API}/api/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: trimmed }),
       });
 
       if (!res.ok) {

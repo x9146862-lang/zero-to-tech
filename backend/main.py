@@ -1,5 +1,5 @@
 import uuid
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from pypinyin import lazy_pinyin, Style
@@ -80,7 +80,9 @@ def score_label(score):
 @app.post("/api/analyze")
 def analyze(req: AnalyzeRequest, request: Request, response: Response):
     sid = get_session_id(request, response)
-    text = req.text
+    text = req.text.strip()
+    if not text:                                      # 空文本会让 SnowNLP 除零崩溃，先拦住
+        raise HTTPException(status_code=422, detail="别空着，贴点文字再分析")
     score = round(SnowNLP(text).sentiments, 2)
     result = {
         "text": text,
