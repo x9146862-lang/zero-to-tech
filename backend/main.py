@@ -11,7 +11,12 @@ from dotenv import load_dotenv
 
 load_dotenv()                        # ← 读同目录下的 .env
 
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
+# 允许跨源访问的前端地址，多个用逗号隔开；没配时默认放行本地前端，避免启动就崩
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
 
 
 init_db()  # 初始化数据库
