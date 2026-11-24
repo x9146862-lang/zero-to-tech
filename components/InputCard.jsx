@@ -3,9 +3,9 @@
 // 文字实验室的"输入区"卡片。这一节给"开始分析"接上了后端：
 // 点按钮就把输入的文字 POST 给 /api/analyze，拿到结果通过 onResult 交给父组件。
 // 请求出问题时用 try/catch 接住，在按钮上方给一行提示，不让界面无声失效。
-// 后端地址暂时写死在下面，跟着课件，这一节最后会把它收进 .env.local。
+// 后端地址从 .env.local 的 NEXT_PUBLIC_API_BASE_URL 读；留空则走同源相对路径。
 import { useState } from "react";
-const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export default function InputCard({ onResult }) {
   const [text, setText] = useState("今天的风很轻，适合把脑海里的想法慢慢写下来。");
@@ -18,7 +18,7 @@ export default function InputCard({ onResult }) {
       const res = await fetch(`${API}/api/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",     
+        credentials: "include",
         body: JSON.stringify({ text }),
       });
 
