@@ -156,61 +156,6 @@ sudo nginx -t                          # 改完 Nginx 配置先验语法
 sudo systemctl reload nginx            # 再让它重读
 ```
 
-
-前提：服务器上已装好 Python 3.10+、Node.js 18+ 和 Nginx，
-且 Nginx 的站点根目录已指向本项目的 `out/`、监听 80 端口。
-
-**1. 拉取代码**
-
-```bash
-cd ~/zero-to-tech
-git pull
-```
-
-**2. 前端：装依赖、写配置、构建**
-
-```bash
-npm install
-cp .env.example .env.production   # 按下面「配置说明」填好
-npm run build                     # 产物进 out/，由 Nginx 提供服务
-```
-
-**3. 后端：建环境、装依赖、写配置**
-
-```bash
-cd backend
-python3 -m venv --prompt=zero-to-tech .venv   # 首次部署才需要
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env              # 按下面「配置说明」填好
-```
-
-**4. 后端：在后台跑起来**
-
-```bash
-nohup .venv/bin/fastapi run > backend.log 2>&1 &
-```
-
-`fastapi run` 是生产模式，监听 `0.0.0.0:8000`；`nohup ... &` 让它在
-SSH 断开后继续运行，日志写进 `backend.log`。
-
-查看日志、停止服务：
-
-```bash
-tail -f backend.log           # 看日志
-ps aux | grep fastapi         # 找到进程号
-kill 进程号                    # 停掉
-```
-
-**5. 放行 8000 端口**
-
-去云平台控制台的安全组 / 防火墙，放行 8000 端口（80 端口应该已经放行）。
-
-**6. 验证**
-
-浏览器访问 `http://服务器IP`，打开文字实验室做一次分析，再看历史记录。
-换一个浏览器（或无痕窗口）再试一次，两边的历史记录应该是互相看不到的。
-
 ## 配置说明
 
 配置文件不进 Git，请照着 `.env.example` 自己建一份。
