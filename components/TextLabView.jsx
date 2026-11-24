@@ -29,6 +29,18 @@ export default function TextLabView() {
     }
   }
 
+  async function clearHistory() {
+    try {
+      await fetch(`${API}/api/history`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      setHistory([]);      // 清空成功，直接让列表变空
+    } catch {
+      // 后端没起来时保持现状，不做任何事
+    }
+  }
+
   return (
     <AnimatedCardGrid className="dashboard-grid">
       <article className="hero-stage panel-full">
@@ -43,6 +55,7 @@ export default function TextLabView() {
         open={historyOpen}
         items={history}
         onClose={() => setHistoryOpen(false)}
+        onClear={clearHistory}
       />
     </AnimatedCardGrid>
   );

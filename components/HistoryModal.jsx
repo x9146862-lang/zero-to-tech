@@ -16,7 +16,7 @@ function formatTime(iso) {
   });
 }
 
-export default function HistoryModal({ open, items, onClose }) {
+export default function HistoryModal({ open, items, onClose, onClear }) {
   // 按 Esc 关闭
   useEffect(() => {
     if (!open) return;
@@ -38,9 +38,16 @@ export default function HistoryModal({ open, items, onClose }) {
             <p className="section-kicker">历史记录</p>
             <h3>最近的分析</h3>
           </div>
-          <button type="button" className="modal-close" onClick={onClose}>
-            关闭
-          </button>
+          <div className="modal-actions">
+            {items.length > 0 && (
+              <button type="button" className="ghost-button" onClick={onClear}>
+                清空
+              </button>
+            )}
+            <button type="button" className="modal-close" onClick={onClose}>
+              关闭
+            </button>
+          </div>
         </div>
 
         {items.length === 0 ? (
